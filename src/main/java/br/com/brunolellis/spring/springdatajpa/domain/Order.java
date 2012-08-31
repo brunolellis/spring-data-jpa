@@ -30,7 +30,12 @@ public class Order implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "ORDER_ID")
 	private Collection<Item> items = new LinkedHashSet<Item>();
-
+	
+	public Order() {
+		this.created = new Date();
+		
+	}
+	
 	public String getCustomer() {
 		return customer;
 	}

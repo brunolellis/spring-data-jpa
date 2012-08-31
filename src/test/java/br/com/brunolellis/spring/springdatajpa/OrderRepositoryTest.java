@@ -10,6 +10,10 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -78,6 +82,37 @@ public class OrderRepositoryTest {
 	public void findItems() {
 		List<Order> orders = orderRepository.findDistinctByItemsPriceGreaterThan(100.00);
 		printOrders(orders);
+		
+	}
+	
+	@Test
+	public void findAllOrderByCreatedDesc() {
+		List<Order> orders = orderRepository.findAll(new Sort(Direction.DESC, "created"));
+		printOrders(orders);
+		
+	}
+	
+	@Test
+	public void findPagination() {
+		Page<Order> orders = null;
+		
+		long total = orderRepository.count();
+		
+		int pages = (int) ((total + 2) / 2);
+		
+		for (int i = 0; i < pages; i++) {
+			orders = orderRepository.findAll(new PageRequest(i, 2, Direction.DESC, "created"));
+			
+			System.out.println("pagina " + (i+1) + " de " + pages);
+			for (Order order : orders) {
+				System.out.println(order);
+			}
+			
+			System.out.println("------------------------");
+			
+		}
+		
+		assertEquals(total, orders.getTotalElements()); 
 		
 	}
 
